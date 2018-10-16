@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+
+    <bean class="com.dubboclub.dk.monitor.DubboKeeperMonitorService" autowire="byType" id="dubboKeeperMonitorService">
+
+    </bean>
+
+    <!-- 说明: 业务应用dubbo配置中需要配置dubbo.monitor.protocol=registry,
+         这样, MonitorFilter才能起作用, 创建DubboMontor对象并启动定时调度, 调度时间间隔即为此处配置的interval,
+         调度干的事情为将统计对象Statistics封装为URL, 并触发dubboKeeperMonitorService#collect()方法执行-->
+
+    <!-- 另外需要注意的一点是, 当业务应用dubbo配置了dubbo.monitor.protocol=registry时, 如果使用redis作为注册中心,则在
+          服务调用过程中会抛出"Unsupported redis cluster:failsafe. The redis cluster only supported failover or replicate."
+          异常, 这是由于DubboMonitorFactory#createMonitor()方法中会给url添加"cluster=failsafe"参数, 而RedisRegistry被反复创建引起,
+          此问题在Dubbo版本中一直存在, 官方也未针对Redis注册中心解决此问题.使用我们自己的chaos-dubbo则不存在此问题 -->
+    <dubbo:service interface="com.alibaba.dubbo.monitor.MonitorService" ref="dubboKeeperMonitorService" id="exportMonitorService">
+        <dubbo:parameter key="interval" value="${monitor.collect.interval}"/>
+    </dubbo:service>
+</beans>
