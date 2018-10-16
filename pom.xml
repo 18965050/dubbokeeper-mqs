@@ -10,7 +10,7 @@
 
   <properties>
     <dubbo.registry.address>
-      <![CDATA[redis2://192.168.98.101:6379?max.active=200&max.idle=10&timeout=3000]]>
+      <![CDATA[redis://192.168.98.101:6379?max.active=200&max.idle=10&timeout=3000]]>
     </dubbo.registry.address>
     <dubbo.registry.file>/home/xyz/dubbo/dubbokeeper-mqs.cache</dubbo.registry.file>
     <peeper.zookeepers></peeper.zookeepers>
@@ -135,17 +135,36 @@
       <version>4.1.6.RELEASE</version>
     </dependency>
 
-    <!-- chaos-dubbo -->
+    <!-- dubbo -->
     <dependency>
-      <groupId>cn.xyz</groupId>
-      <artifactId>chaos-dubbo</artifactId>
-      <version>1.1.8</version>
+      <groupId>com.alibaba</groupId>
+      <artifactId>dubbo</artifactId>
+      <version>2.5.10</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>spring</artifactId>
+          <groupId>org.springframework</groupId>
+        </exclusion>
+        <exclusion>
+          <groupId>log4j</groupId>
+          <artifactId>log4j</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.jboss.netty</groupId>
+          <artifactId>netty</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
       <groupId>redis.clients</groupId>
       <artifactId>jedis</artifactId>
       <version>2.9.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.javassist</groupId>
+      <artifactId>javassist</artifactId>
+      <version>3.21.0-GA</version>
     </dependency>
 
     <!-- tomcat -->
@@ -247,92 +266,4 @@
     </plugins>
   </build>
 
-  <profiles>
-    <profile>
-      <id>dev</id>
-      <properties>
-        <dubbo.registry.address>
-          <![CDATA[redis2://192.168.56.89:6379?max.active=200&max.idle=10&timeout=3000]]>
-        </dubbo.registry.address>
-        <dubbo.registry.file>/home/xyz/dubbo/dubbokeeper-mqs.cache</dubbo.registry.file>
-        <peeper.zookeepers></peeper.zookeepers>
-        <monitor.log.home>/home/xyz/dubbo/dubbokeeper-mqs-logs</monitor.log.home>
-        <dubbo.monitor.mysql.url>
-          <![CDATA[jdbc:mysql://192.168.56.75:3306/dubbo_keeper_dev?useUnicode=true&amp;serverTimezone=UTC]]>
-        </dubbo.monitor.mysql.url>
-        <dubbo.monitor.mysql.username>root</dubbo.monitor.mysql.username>
-        <dubbo.monitor.mysql.password>ins1234</dubbo.monitor.mysql.password>
-        <dubbo.monitor.mysql.pool.max>50</dubbo.monitor.mysql.pool.max>
-        <dubbo.monitor.mysql.pool.min>10</dubbo.monitor.mysql.pool.min>
-        <manager.username>guest</manager.username>
-        <manager.password>guest</manager.password>
-      </properties>
-    </profile>
-
-
-    <profile>
-      <id>fat</id>
-      <properties>
-        <dubbo.registry.address>
-          <![CDATA[redis2://192.168.56.90:6379?max.active=200&max.idle=10&timeout=3000]]>
-        </dubbo.registry.address>
-        <dubbo.registry.file>/home/xyz/dubbo/dubbokeeper-mqs.cache</dubbo.registry.file>
-        <peeper.zookeepers></peeper.zookeepers>
-        <monitor.log.home>/home/xyz/dubbo/dubbokeeper-mqs-logs</monitor.log.home>
-        <dubbo.monitor.mysql.url>
-          <![CDATA[jdbc:mysql://192.168.56.75:3306/dubbo_keeper_test?useUnicode=true&amp;serverTimezone=UTC]]>
-        </dubbo.monitor.mysql.url>
-        <dubbo.monitor.mysql.username>root</dubbo.monitor.mysql.username>
-        <dubbo.monitor.mysql.password>ins1234</dubbo.monitor.mysql.password>
-        <dubbo.monitor.mysql.pool.max>50</dubbo.monitor.mysql.pool.max>
-        <dubbo.monitor.mysql.pool.min>10</dubbo.monitor.mysql.pool.min>
-        <manager.username>guest</manager.username>
-        <manager.password>guest</manager.password>
-      </properties>
-    </profile>
-
-    <profile>
-      <id>uat</id>
-      <build><finalName>${artifactId}-${version}-uat</finalName></build>
-      <properties>
-        <dubbo.registry.address>
-          <![CDATA[redis2://192.168.1.46:8998?max.active=200&max.idle=10&timeout=3000]]>
-        </dubbo.registry.address>
-        <dubbo.registry.file>/home/xyz/dubbo/dubbokeeper-mqs.cache</dubbo.registry.file>
-        <peeper.zookeepers></peeper.zookeepers>
-        <monitor.log.home>/home/xyz/dubbo/dubbokeeper-mqs-logs</monitor.log.home>
-        <dubbo.monitor.mysql.url>
-          <![CDATA[jdbc:mysql://192.168.1.49:3306/dubbo_keeper_uat?useUnicode=true&amp;serverTimezone=UTC]]>
-        </dubbo.monitor.mysql.url>
-        <dubbo.monitor.mysql.username>apollo</dubbo.monitor.mysql.username>
-        <dubbo.monitor.mysql.password>wmg8qxch</dubbo.monitor.mysql.password>
-        <dubbo.monitor.mysql.pool.max>50</dubbo.monitor.mysql.pool.max>
-        <dubbo.monitor.mysql.pool.min>10</dubbo.monitor.mysql.pool.min>
-        <manager.username>admin</manager.username>
-        <manager.password>insxyz520</manager.password>
-      </properties>
-    </profile>
-
-    <profile>
-      <id>pro</id>
-      <build><finalName>${artifactId}-${version}-pro</finalName></build>
-      <properties>
-        <dubbo.registry.address>
-          <![CDATA[redis2://192.168.1.48:8998?max.active=200&max.idle=10&timeout=3000]]>
-        </dubbo.registry.address>
-        <dubbo.registry.file>/home/xyz/dubbo/dubbokeeper-mqs.cache</dubbo.registry.file>
-        <peeper.zookeepers></peeper.zookeepers>
-        <monitor.log.home>/home/xyz/dubbo/dubbokeeper-mqs-logs</monitor.log.home>
-        <dubbo.monitor.mysql.url>
-          <![CDATA[jdbc:mysql://192.168.1.49:3306/dubbo_keeper_pro?useUnicode=true&amp;serverTimezone=UTC]]>
-        </dubbo.monitor.mysql.url>
-        <dubbo.monitor.mysql.username>apollo</dubbo.monitor.mysql.username>
-        <dubbo.monitor.mysql.password>wmg8qxch</dubbo.monitor.mysql.password>
-        <dubbo.monitor.mysql.pool.max>50</dubbo.monitor.mysql.pool.max>
-        <dubbo.monitor.mysql.pool.min>10</dubbo.monitor.mysql.pool.min>
-        <manager.username>admin</manager.username>
-        <manager.password>insxyz520</manager.password>
-      </properties>
-    </profile>
-  </profiles>
 </project>
